@@ -25,7 +25,8 @@
             "Resource": [
                 "{{tableArn}}",
                 "{{kinsesisTableArn}}",
-                "{{wildcardStreamArn}}"
+                "{{wildcardStreamArn}}",
+                "{{tableArn}}/index/*"
             ]
         }
     ]

@@ -139,14 +139,15 @@ var setupIAM = function () {
   var _ref2 = _asyncToGenerator(regeneratorRuntime.mark(function _callee4(tableArn, kinsesisTableArn, wildcardStreamArn) {
     var _this = this;
 
-    var spinner, res, arns, _ret;
+    var spinner, templatesDir, res, arns, _ret;
 
     return regeneratorRuntime.wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
           case 0:
             spinner = ora('Creating IAM policies').start();
-            _context4.prev = 1;
+            templatesDir = __dirname + '/../templates';
+            _context4.prev = 2;
             return _context4.delegateYield(regeneratorRuntime.mark(function _callee3() {
               var policyTemplate, policy, tablePolicyDoc, cloudwatchPolicyDoc, _ref3, _ref4, username, createCmdOutput, creds;
 
@@ -154,7 +155,7 @@ var setupIAM = function () {
                 while (1) {
                   switch (_context3.prev = _context3.next) {
                     case 0:
-                      policyTemplate = fs.readFileSync('templates/table-access-policy.swig').toString();
+                      policyTemplate = fs.readFileSync(templatesDir + '/table-access-policy.swig').toString();
                       policy = fillTemplate(policyTemplate, { tableArn: tableArn, kinsesisTableArn: kinsesisTableArn, wildcardStreamArn: wildcardStreamArn });
 
                       // 1. create IAM policies
@@ -171,7 +172,7 @@ var setupIAM = function () {
                       // write policy files to 'policies' directory
 
                       fs.writeFileSync(tablePolicyDoc, policy);
-                      fs.writeFileSync(cloudwatchPolicyDoc, fs.readFileSync('templates/cloudwatch-allow-putMetricData.swig').toString());
+                      fs.writeFileSync(cloudwatchPolicyDoc, fs.readFileSync(templatesDir + '/cloudwatch-allow-putMetricData.swig').toString());
 
                       _context3.next = 10;
                       return Promise.all([createPolicy('prt-table-access-' + APP_ID, tablePolicyDoc), createPolicy('prt-cloudwatch-allow-putMetricData-' + APP_ID, cloudwatchPolicyDoc)]);
@@ -257,36 +258,36 @@ var setupIAM = function () {
                   }
                 }
               }, _callee3, _this);
-            })(), 't0', 3);
+            })(), 't0', 4);
 
-          case 3:
+          case 4:
             _ret = _context4.t0;
 
             if (!((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object")) {
-              _context4.next = 6;
+              _context4.next = 7;
               break;
             }
 
             return _context4.abrupt('return', _ret.v);
 
-          case 6:
-            _context4.next = 13;
+          case 7:
+            _context4.next = 14;
             break;
 
-          case 8:
-            _context4.prev = 8;
-            _context4.t1 = _context4['catch'](1);
+          case 9:
+            _context4.prev = 9;
+            _context4.t1 = _context4['catch'](2);
 
             spinner.fail();
             console.log(_context4.t1.message);
             spinner.stop();
 
-          case 13:
+          case 14:
           case 'end':
             return _context4.stop();
         }
       }
-    }, _callee4, this, [[1, 8]]);
+    }, _callee4, this, [[2, 9]]);
   }));
 
   function setupIAM(_x, _x2, _x3) {
@@ -426,7 +427,7 @@ var create = function () {
             wildcardStreamArn = tableArn + "/stream/*";
 
 
-            console.log('\n == Creating project \'' + project_name + '\' ==');
+            console.log('\n== Creating project \'' + project_name + '\' ==');
 
             _context6.next = 32;
             return setupIAM(tableArn, kinsesisTableArn, wildcardStreamArn);

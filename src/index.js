@@ -28,7 +28,7 @@ const command = {
 
 const cyan = chalk.cyan.bind(chalk)
 
-var configure = async function configure() {
+const configure = async function configure() {
   var email = await prompt(cyan('email: '))
   var secret = await prompt.password(cyan('secret: '))
   var data = {'account': {email, secret}};
@@ -74,11 +74,11 @@ function createPolicy(name, doc) {
 }
 
 // setup IAM policies and users
-var setupIAM = async function setupIAM(tableArn, kinsesisTableArn, wildcardStreamArn) {
+const setupIAM = async function setupIAM(tableArn, kinsesisTableArn, wildcardStreamArn) {
   const spinner = ora('Creating IAM policies').start();
-
+  const templatesDir = __dirname + '/../templates';
   try {
-    const policyTemplate = fs.readFileSync('templates/table-access-policy.swig').toString()
+    const policyTemplate = fs.readFileSync(templatesDir + '/table-access-policy.swig').toString()
     const policy = fillTemplate(policyTemplate, {tableArn, kinsesisTableArn, wildcardStreamArn})
 
     // 1. create IAM policies
@@ -91,7 +91,7 @@ var setupIAM = async function setupIAM(tableArn, kinsesisTableArn, wildcardStrea
     // write policy files to 'policies' directory
     fs.writeFileSync(tablePolicyDoc, policy)
     fs.writeFileSync(cloudwatchPolicyDoc, 
-      fs.readFileSync('templates/cloudwatch-allow-putMetricData.swig').toString())
+      fs.readFileSync(templatesDir + '/cloudwatch-allow-putMetricData.swig').toString())
 
     var [...res] = await Promise.all([
       createPolicy('prt-table-access-' + APP_ID, tablePolicyDoc),
@@ -148,7 +148,7 @@ var setupIAM = async function setupIAM(tableArn, kinsesisTableArn, wildcardStrea
   }
 } 
 
-var setupProject = async function setupProject({account, table, details, aws}) {
+const setupProject = async function setupProject({account, table, details, aws}) {
   const URL = PRT_SERVICE + '/project/setup'
 
   var data = {
@@ -176,8 +176,7 @@ var setupProject = async function setupProject({account, table, details, aws}) {
   }
 }
 
-var create = async function create (project_name) {
-  
+const create = async function create (project_name) {
   const credsExist = await pathExists(PRT_CREDS_FILE);
   if(!credsExist) {
     console.log('Could not find credentials. Run "prt configure" to configure credentials.')
@@ -208,7 +207,7 @@ var create = async function create (project_name) {
   table.streamArn = await prompt(cyan(`DynamoDB Stream ARN for table ${table.tableName}: `))
   const wildcardStreamArn = tableArn + "/stream/*" 
 
-  console.log(`\n == Creating project '${project_name}' ==`)
+  console.log(`\n== Creating project '${project_name}' ==`)
 
   var creds = await setupIAM(tableArn, kinsesisTableArn, wildcardStreamArn)
   const aws = {userAccessKey: creds.accessKeyId, userSecretKey: creds.secretAccessKey}

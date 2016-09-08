@@ -1,11 +1,15 @@
-# Phineas CLI
+## Phineas CLI
 
-Installation
+### Prequisites
+
+This requires that you have [installed](https://aws.amazon.com/cli/) and [configured](http://docs.aws.amazon.com/cli/latest/reference/configure/) **aws-cli**.
+
+### Installation
 ```
 npm install -g phineas-cli
 ```
 
-Usage
+### Usage
 ```
 $ prt --help
 

@@ -27,6 +27,7 @@
   "author": "JS",
   "license": "MIT",
   "dependencies": {
+    "babel-polyfill": "^6.13.0",
     "chalk": "^1.1.3",
     "commander": "^2.9.0",
     "dashify": "^0.2.2",
@@ -42,7 +43,6 @@
   "devDependencies": {
     "babel-cli": "^6.14.0",
     "babel-plugin-transform-async-to-generator": "^6.8.0",
-    "babel-polyfill": "^6.13.0",
     "babel-preset-es2015": "^6.14.0"
   }
 }

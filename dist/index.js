@@ -21,6 +21,7 @@ var ora = require('ora');
 var chalk = require('chalk');
 var pathExists = require('path-exists');
 var config = require('./config');
+var hasSubstring = require('lodash.includes');
 
 var PRT_DIR = homedir() + '/.prt';
 var PRT_CREDS_FILE = PRT_DIR + '/creds';
@@ -384,7 +385,7 @@ var create = function () {
             details = {};
             defaultDescription = 'A phineas project';
             _context6.next = 10;
-            return prompt(cyan('Description: (' + defaultDescription + ')'));
+            return prompt(cyan('Description: (' + defaultDescription + ') '));
 
           case 10:
             description = _context6.sent;
@@ -416,33 +417,37 @@ var create = function () {
           case 23:
             tableArn = _context6.sent;
 
+            if (!hasSubstring(tableArn, 'us-east-1')) {
+              console.log("Tables in only 'us-east-1' region are supported at this time.");
+              process.exit(0);
+            }
             // const tableArn = "arn:aws:dynamodb:us-east-1:467623578459:table/Chat"
 
             kinsesisTableArn = tableArn + "ChangeProcessor";
-            _context6.next = 27;
-            return prompt(cyan('DynamoDB Stream ARN for table ' + table.tableName + ': '));
+            _context6.next = 28;
+            return prompt(cyan('DynamoDB Stream ARN for table \'' + table.tableName + '\': '));
 
-          case 27:
+          case 28:
             table.streamArn = _context6.sent;
             wildcardStreamArn = tableArn + "/stream/*";
 
 
             console.log('\n== Creating project \'' + project_name + '\' ==');
 
-            _context6.next = 32;
+            _context6.next = 33;
             return setupIAM(tableArn, kinsesisTableArn, wildcardStreamArn);
 
-          case 32:
+          case 33:
             creds = _context6.sent;
             aws = { userAccessKey: creds.accessKeyId, userSecretKey: creds.secretAccessKey };
             account = JSON.parse(fs.readFileSync(PRT_CREDS_FILE)).account;
-            _context6.next = 37;
+            _context6.next = 38;
             return setupProject({ details: details, table: table, aws: aws, account: account });
 
-          case 37:
+          case 38:
             process.exit(0);
 
-          case 38:
+          case 39:
           case 'end':
             return _context6.stop();
         }

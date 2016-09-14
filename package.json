@@ -33,6 +33,7 @@
     "dashify": "^0.2.2",
     "execa": "^0.4.0",
     "homedir": "^0.6.0",
+    "lodash.includes": "^4.3.0",
     "node-fetch": "^1.6.0",
     "ora": "^0.3.0",
     "path-exists": "^3.0.0",

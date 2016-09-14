@@ -14,6 +14,7 @@ const ora = require('ora')
 const chalk = require('chalk')
 const pathExists = require('path-exists');
 const config = require('./config')
+const hasSubstring = require('lodash.includes')
 
 const PRT_DIR = homedir() + '/.prt';
 const PRT_CREDS_FILE = PRT_DIR + '/creds'
@@ -187,7 +188,7 @@ const create = async function create (project_name) {
   const details = {};
 
   const defaultDescription = 'A phineas project'
-  const description = await prompt(cyan(`Description: (${defaultDescription})`))
+  const description = await prompt(cyan(`Description: (${defaultDescription}) `))
   details.appID = APP_ID = dashify(project_name) + "-" + shortid.generate().toLowerCase()
   details.description = (description.length)? description : defaultDescription
   details.name = project_name
@@ -201,10 +202,14 @@ const create = async function create (project_name) {
   }
   
   const tableArn = await prompt(cyan('Table ARN: '))
+  if(!hasSubstring(tableArn, 'us-east-1')) {
+    console.log("Tables in only 'us-east-1' region are supported at this time.")
+    process.exit(0)
+  }
   // const tableArn = "arn:aws:dynamodb:us-east-1:467623578459:table/Chat"
 
   const kinsesisTableArn = tableArn + "ChangeProcessor"
-  table.streamArn = await prompt(cyan(`DynamoDB Stream ARN for table ${table.tableName}: `))
+  table.streamArn = await prompt(cyan(`DynamoDB Stream ARN for table '${table.tableName}': `))
   const wildcardStreamArn = tableArn + "/stream/*" 
 
   console.log(`\n== Creating project '${project_name}' ==`)
